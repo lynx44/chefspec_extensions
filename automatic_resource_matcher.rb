@@ -22,7 +22,7 @@ module ChefSpec
     end
 
     def cookbooks
-      @cookbooks ||=
+      @@cookbooks ||=
         cookbook_paths
           .map { |cookbook_path| Dir.glob("#{cookbook_path}/*") }
           .flatten
