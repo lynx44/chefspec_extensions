@@ -32,7 +32,7 @@ module ChefSpec
     end
 
     def cookbook_paths
-      Chef::Config[:cookbook_path]
+      Chef::Config[:cookbook_path].kind_of?(Array) ? Chef::Config[:cookbook_path] : [Chef::Config[:cookbook_path]]
     end
 
     def get_cookbook_candidates(method_name)
