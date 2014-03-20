@@ -18,7 +18,7 @@ module ChefSpec
 
     private
     def is_resource_matcher_candidate(method_name, args)
-      method_name.count('_') >= 2 && args.length == 1
+      method_name.count('_') >= 1 && args.length == 1
     end
 
     def cookbooks
@@ -40,6 +40,10 @@ module ChefSpec
     end
 
     def parse_lwrp(cookbook, method_name)
+      if(method_name.count('_') == 1)
+        method_name = "#{method_name}_default"
+      end
+
       parts = method_name.split("_#{cookbook}_")
       { :action => parts[0], :cookbook => cookbook, :resource_name => parts[1] }
     end
@@ -59,7 +63,11 @@ module ChefSpec
 
     def create_matcher(args, cookbook, method_name)
       resource_definition = parse_lwrp(cookbook, method_name)
-      ChefSpec::Matchers::ResourceMatcher.new("#{cookbook}_#{resource_definition[:resource_name]}".to_sym, resource_definition[:action].to_sym, args[0])
+      resource_name = "#{cookbook}_#{resource_definition[:resource_name]}"
+      if(resource_definition[:resource_name] == "default")
+        resource_name = cookbook
+      end
+      ChefSpec::Matchers::ResourceMatcher.new(resource_name.to_sym, resource_definition[:action].to_sym, args[0])
     end
   end
 end
